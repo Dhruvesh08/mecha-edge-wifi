@@ -105,7 +105,7 @@ pub async fn get_connect_wifi() -> Result<()> {
                 error!("Error: {}", e);
             }
         },
-        connect_wifi(requester, "ssid", "psk"),
+        connect_wifi(requester, &ssid, &psk),
         broadcast_listener(broadcast),
     );
 
@@ -132,9 +132,9 @@ async fn connect_wifi(requester: sta::RequestClient, ssid: &str, psk: &str) -> R
         .await?;
 
     //select network
-    // requester.select_network(network_id).await?;
+    requester.select_network(network_id).await?;
 
-    // requester.shutdown().await?;
+    requester.shutdown().await?;
     Ok(())
 }
 
