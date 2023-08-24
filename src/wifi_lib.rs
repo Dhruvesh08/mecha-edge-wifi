@@ -119,9 +119,14 @@ async fn connect_wifi(requester: sta::RequestClient, ssid: &str, psk: &str) -> R
     let network_id = requester.add_network().await?;
     info!("Network id: {}", network_id);
 
+    info!("Setting network ssid");
+
     requester
         .set_network_ssid(network_id, ssid.to_string())
         .await?;
+
+    info!("Setting network psk");
+
     requester
         .set_network_psk(network_id, psk.to_string())
         .await?;
