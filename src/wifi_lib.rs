@@ -129,7 +129,7 @@ async fn connect_wifi(requester: sta::RequestClient, ssid: &str, psk: &str) -> R
     //select network
     // requester.select_network(network_id).await?;
 
-    requester.shutdown().await?;
+    // requester.shutdown().await?;
     Ok(())
 }
 
