@@ -25,14 +25,5 @@ async fn main() {
         info!("   {:?}", scan_result);
     }
 
-    loop {
-        let broadcast = wifi_manager.listen_broadcast().await.unwrap();
-        match broadcast {
-            Broadcast::Connected => info!("Connected to wifi"),
-            Broadcast::Disconnected => info!("Disconnected from wifi"),
-            Broadcast::NetworkNotFound => todo!(),
-            Broadcast::WrongPsk => todo!(),
-            Broadcast::Ready => todo!(),
-        }
-    }
+
 }
