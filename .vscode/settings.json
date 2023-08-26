@@ -1,0 +1,7 @@
+{
+    //add rust analyzer and format on save
+    "[rust]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "rust-lang.rust-analyzer"
+    },
+}

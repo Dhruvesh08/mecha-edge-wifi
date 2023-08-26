@@ -338,6 +338,7 @@ dependencies = [
  "env_logger",
  "futures",
  "log",
+ "once_cell",
  "tokio",
  "tokio-util",
  "wifi-ctrl",
