@@ -147,6 +147,41 @@ async fn connect_wifi(requester: sta::RequestClient, ssid: &str, psk: &str) -> R
     Ok(())
 }
 
+// remove wifi network from known networks using network id
+pub async fn remove_wifi_network(network_id: usize) -> Result<()> {
+    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
+    info!("Starting Wifi Connection");
+
+    let mut setup = sta::WifiSetup::new()?;
+
+    let proposed_path = format!("/var/run/wpa_supplicant/wlan0");
+    setup.set_socket_path(proposed_path);
+
+    let broadcast = setup.get_broadcast_receiver();
+    let requester = setup.get_request_client();
+    let runtime = setup.complete();
+
+    let (_runtime, remove_wifi, _broadcast) = tokio::join!(
+        async move {
+            if let Err(e) = runtime.run().await {
+                error!("Error: {}", e);
+            }
+        },
+        remove_wifi(requester, network_id),
+        broadcast_listener(broadcast),
+    );
+
+    let wifi_list = remove_wifi.unwrap();
+    Ok(wifi_list)
+}
+
+async fn remove_wifi(requester: sta::RequestClient, network_id: usize) -> Result {
+    info!("Removing network id: {}", network_id);
+    requester.remove_network(network_id).await?;
+    requester.shutdown().await?;
+    Ok(())
+}
+
 async fn broadcast_listener(mut broadcast_receiver: sta::BroadcastReceiver) -> Result {
     while let Ok(broadcast) = broadcast_receiver.recv().await {
         info!("Broadcast: {:?}", broadcast);
