@@ -116,11 +116,20 @@ pub async fn get_connect_wifi() -> Result<()> {
 async fn connect_wifi(requester: sta::RequestClient, ssid: &str, psk: &str) -> Result {
     info!("Getting network id for network");
 
+    //first scan  known networks
+    let networks = requester.get_networks().await?;
+
+    //if ssid is in known networks, use that network id to connect else create new network id
+    for network in networks {
+        if network.ssid == ssid {
+            info!("Network id found");
+            requester.select_network(network.network_id).await?;
+            requester.shutdown().await?;
+            return Ok(());
+        }
+    }
+
     let network_id = requester.add_network().await?;
-    info!("Network id: {}", network_id);
-
-    info!("Setting network ssid");
-
     requester
         .set_network_ssid(network_id, ssid.to_string())
         .await?;
